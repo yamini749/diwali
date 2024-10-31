@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diwali Firecracker Animation</title>
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .message {
+            position: fixed;
+            bottom: 10px;
+            font-size: 24px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 3s ease-out forwards 2s;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes launch {
+            0% {
+                bottom: 0;
+                opacity: 1;
+            }
+            70% {
+                bottom: 90vh;
+                opacity: 1;
+            }
+            100% {
+                bottom: 100vh;
+                opacity: 0;
+            }
+        }
+
+        @keyframes sparkle {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+            to {
+                transform: translate(calc(-10px + 20px * var(--x)), calc(-10px + 20px * var(--y))) scale(0.3);
+            }
+        }
+
+        @keyframes burst {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="message">Happy Diwali!</div>
+
+    <script>
+        function createRocket() {
+            const rocket = document.createElement('div');
+            rocket.className = 'rocket';
+            rocket.style.position = 'absolute';
+            rocket.style.width = '5px';
+            rocket.style.height = '20px';
+            rocket.style.background = 'red';
+            rocket.style.animation = 'launch 2s ease-out forwards';
+            rocket.style.left = `${Math.random() * 80 + 10}vw`;  // Randomize launch position
+            rocket.style.bottom = '0';
+            document.body.appendChild(rocket);
+
+            // Add sparks to simulate firework ascent
+            for (let i = 0; i < 20; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'spark';
+                spark.style.position = 'absolute';
+                spark.style.width = '5px';
+                spark.style.height = '5px';
+                spark.style.background = 'yellow';
+                spark.style.borderRadius = '50%';
+                spark.style.animation = 'sparkle 0.2s infinite alternate';
+                spark.style.setProperty('--x', Math.random() - 0.5);
+                spark.style.setProperty('--y', Math.random() - 0.5);
+                rocket.appendChild(spark);
+            }
+
+            // Explosion on reaching top
+            rocket.addEventListener('animationend', () => {
+                rocket.remove();
+                for (let i = 0; i < 20; i++) {
+                    const explosion = document.createElement('div');
+                    explosion.className = 'explosion';
+                    explosion.style.position = 'absolute';
+                    explosion.style.width = '0';
+                    explosion.style.height = '0';
+                    explosion.style.borderRadius = '50%';
+                    explosion.style.background = 'radial-gradient(circle, #FFD700, #FF4500, transparent)';
+                    explosion.style.top = `${Math.random() * 20 + 40}vh`;
+                    explosion.style.left = `${rocket.style.left}`;
+                    explosion.style.animation = 'burst 0.8s ease-out forwards';
+                    document.body.appendChild(explosion);
+                    
+                    explosion.addEventListener('animationend', () => {
+                        explosion.remove();
+                    });
+                }
+            });
+        }
+
+        // Launch rockets every 1.5 seconds
+        setInterval(createRocket, 1500);
+    </script>
+</body>
+</html>
